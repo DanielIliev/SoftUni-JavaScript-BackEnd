@@ -5,6 +5,7 @@ const path = require('path');
 const formidable = require('formidable');
 const Cat = require('../database/catSchema.js');
 const mongoose = require('mongoose');
+const db = require('../database/db.js');
 
 mongoose.connect('mongodb://localhost:27017/cats').then(() => {
     console.log('Connected');
@@ -13,12 +14,8 @@ mongoose.connect('mongodb://localhost:27017/cats').then(() => {
 });
 
 router.get('/', async (req, res) => {
-    try {
-        const data = await Cat.find().lean();
-        res.render('home', { data });
-    } catch (error) {
-        console.log(error);
-    }
+    const data = await db.getCats()
+    res.render('home', { data });
 });
 
 router.get('/cats/add-cat', (req, res) => {
@@ -56,20 +53,14 @@ router.get('/cats/add-cat', (req, res) => {
             };
         });
 
-        const entry = new Cat({
+        await db.addCat({
             name: fields.name,
             description: fields.description,
             breed: fields.breed,
             photoUrl: relativePath
         });
 
-        try {
-            await entry.save();
-            res.redirect('/');
-        } catch (error) {
-            console.log(error);
-        }
-
+        res.redirect('/');
     });
 });
 
