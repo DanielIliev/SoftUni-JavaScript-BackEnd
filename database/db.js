@@ -10,6 +10,15 @@ async function getCats() {
     }
 }
 
+async function getBreeds() {
+    try {
+        const data = await Cat.distinct('breed').lean();
+        return data;
+    } catch (error) {
+        return error;
+    }
+}
+
 async function addCat(catInfo) {
     const entry = new Cat({
         name: catInfo.name,
@@ -27,5 +36,6 @@ async function addCat(catInfo) {
 
 module.exports = {
     getCats,
+    getBreeds,
     addCat
 }

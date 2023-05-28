@@ -18,8 +18,10 @@ router.get('/', async (req, res) => {
     res.render('home', { data });
 });
 
-router.get('/cats/add-cat', (req, res) => {
-    res.render('addCat');
+router.get('/cats/add-cat', async (req, res) => {
+    const breeds = await db.getBreeds();
+    console.log(breeds);
+    res.render('addCat', { breeds });
 }).post('/cats/add-cat', (req, res, next) => {
     const uploadFolder = path.join(__dirname, '../content/images/');
     const form = formidable({
@@ -64,7 +66,7 @@ router.get('/cats/add-cat', (req, res) => {
     });
 });
 
-router.get('/cats/add-breed', (req, res) => {
+router.get('/cats/add-breed', async (req, res) => {
     res.render('addBreed');
 });
 
