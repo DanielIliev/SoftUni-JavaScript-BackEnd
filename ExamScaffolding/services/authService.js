@@ -1,7 +1,7 @@
 const User = require('../models/User.js');
 const bcrypt = require('bcrypt');
 const jwt = require('../lib/jsonwebtoken.js');
-const SECRET = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+const { SECRET } = require('../constants.js');
 
 exports.findByUsername = async (username) => User.findOne({ username });
 
@@ -67,7 +67,7 @@ exports.register = async (username, email, password, repass) => {
         ]
     });
 
-    if (existingUser) {
+    if (existingUser.length != 0) {
         throw new Error('User already exists');
     }
 

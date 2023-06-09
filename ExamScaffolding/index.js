@@ -5,10 +5,11 @@ const handlebars = require('express-handlebars');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { authentication } = require('./middlewares/authenticationMiddleware.js');
+const { DB_NAME } = require('./constants.js');
 
 // TODO: Change DB name based on exam name
 mongoose.set('strictQuery', false); // For older versions
-mongoose.connect('mongodb://localhost:27017/gamingteam');
+mongoose.connect(`mongodb://localhost:27017/${DB_NAME}`);
 
 app.engine('hbs', handlebars.engine({
     extname: 'hbs'
@@ -25,6 +26,3 @@ app.use(router);
 app.listen(3000, () => {
     console.log('Server listening on port 3000...');
 });
-
-// https://softuni.bg/trainings/resources/video/79985/video-08-february-2023-ivaylo-papazov-js-back-end-january-2023/3972
-// - 01:40:00

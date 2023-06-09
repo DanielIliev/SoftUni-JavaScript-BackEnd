@@ -2,7 +2,11 @@ const router = require('express').Router();
 const authService = require('../services/authService.js');
 
 router.get('/login', (req, res) => {
-    res.render('auth/login', { title: 'Login page - Gaming Team' });
+    if (req.user) {
+        return res.redirect('/');
+    }
+
+    res.render('auth/login', { title: 'Login page' });
 });
 
 router.post('/login', async (req, res) => {
@@ -14,12 +18,16 @@ router.post('/login', async (req, res) => {
         res.cookie('auth', token);
         res.redirect('/');
     } catch (error) {
-        res.render('auth/login', { title: 'Login page - Gaming Team', errorMessage: error.message });
+        res.render('auth/login', { title: 'Login page', errorMessage: error.message });
     }
 });
 
 router.get('/register', (req, res) => {
-    res.render('auth/register', { title: 'Register page - Gaming Team' });
+    if (req.user) {
+        return res.redirect('/');
+    }
+
+    res.render('auth/register', { title: 'Register page' });
 });
 
 router.post('/register', async (req, res) => {
@@ -27,10 +35,20 @@ router.post('/register', async (req, res) => {
 
     try {
         await authService.register(username, email, password, repass);
-        res.render('home', { title: 'Home page - Gaming Team' });
+
+        res.redirect('/');
     } catch (error) {
-        res.render('auth/register', { title: 'Register page - Gaming Team', errorMessage: error.message });
+        res.render('auth/register', { title: 'Register page', errorMessage: error.message });
     }
+});
+
+router.get('/logout', (req, res) => {
+    if (req.user) {
+        return res.redirect('/');
+    }
+    
+    res.clearCookie('auth');
+    res.redirect('/')
 });
 
 module.exports = router;
